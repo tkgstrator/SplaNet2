@@ -99,6 +99,7 @@ function saveJSON($iksm_session, $type){
         echo("[option]\n");
         echo("-a : save results[your weapon, skill, result(win or lose), ...etc] for recent 50 games.\n");
         echo("-d : save detailed results[include other weapon, skill, ...etc] for recent 50 games.\n");
+        echo("-i : save the screen shot of results.\n");
         echo("-r : save records[total paint point, league stat, stage stat, ...etc].\n");
         echo("-t : save timeline[information of sarmon run, splanet gear shop, ...and more].\n");
         exit(0);
@@ -131,6 +132,7 @@ function showhelp(){
     echo("[option]\n");
     echo("-a : save results[your weapon, skill, result(win or lose), ...etc] for recent 50 games.\n");
     echo("-d : save detailed results[include other's weapon, skill, ...etc] for recent 50 games.\n");
+    echo("-i : save the screen shot of results.\n");
     echo("-r : save records[total paint point, league stat, stage stat, ...etc].\n");
     echo("-t : save timeline[information of sarmon run, splanet gear shop, ...and more].\n");
 }
