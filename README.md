@@ -9,10 +9,15 @@ See the above link.
 
 ## Usage
 [command] php splanet2.php [option] [iksm_session]
+
 [option]
+
 -a : save results[your weapon, skill, result(win or lose), ...etc] for recent 50 games.
+
 -d : save detailed results[include other's weapon, skill, ...etc] for recent 50 games.
+
 -r : save records[total paint point, league stat, stage stat, ...etc].
+
 -t : save timeline[information of sarmon run, splanet gear shop, ...and more].
 
 ## Features
