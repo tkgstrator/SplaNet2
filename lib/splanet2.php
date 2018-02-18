@@ -43,14 +43,48 @@ function saveJSON($iksm_session, $type){
         // save a each battle detail
         $path = dirname(getcwd())."/json/results/".$info["id"]."/";
         check_exists($path);
-        for($i=0; $i<=50; $i++){
-            $filename = ($info["num"]+$i).".json";
-            $url = "https://app.splatoon2.nintendo.net/api/results".($info["num"]+$i);
+        for($i=0; $i<50; $i++){
+            if(file_exists($path.$filename)){
+                break;
+            }
+            $filename = ($info["num"]-$i).".json";
+            $url = "https://app.splatoon2.nintendo.net/api/results/".($info["num"]-$i);
             $json = fopen($path.$filename, "w+b");
             fwrite($json, @file_get_contents($url, false, $context));
             fclose($json);
             echo("Save ".$filename."(".$i."/50)\n");
         }
+        echo("Done.\n");
+        exit(0);
+        break;
+    case "-i":
+        // save image
+        $headers = [
+            "Accept-language: ja",
+            "x-requested-with: XMLHttpRequest",
+            "Cookie: iksm_session=".$iksm_session
+        ];
+        $options['http'] = [
+            'method' => 'POST',
+            'header' => implode("\r\n", $headers),
+        ];
+        $context = stream_context_create($options);
+        
+        $path = dirname(getcwd())."/share/".$info["id"]."/";
+        check_exists($path);
+        for($i=0; $i<50; $i++){
+            $filename = ($info["num"]-$i).".png";
+            if(file_exists($path.$filename)){
+                break;
+            }
+            $url = "https://app.splatoon2.nintendo.net/api/share/results/".($info["num"]-$i);
+            $res = json_decode(@file_get_contents($url, false, $context),false);
+            $png = fopen($path.$filename, "w+b");
+            fwrite($png, file_get_contents($res->url));
+            fclose($png);
+            echo("Save ".$filename."(".($i+1)."/50)\n");
+        }
+        echo("Done.\n");
         exit(0);
         break;
     case "-t":
