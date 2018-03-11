@@ -25,13 +25,6 @@ function saveJSON($iksm_session, $type){
 
     // Save JSON
     switch($type){
-    case "-r":
-        // save user record
-        $path = dirname(getcwd())."/json/records/";
-        check_exists($path);
-        $filename = $info["id"].".json";
-        $url = "https://app.splatoon2.nintendo.net/api/records";
-        break;
     case "-a":
         // save all battle results
         $path = dirname(getcwd())."/json/results/";
@@ -39,26 +32,37 @@ function saveJSON($iksm_session, $type){
         $filename = $info["id"].".json";
         $url = "https://app.splatoon2.nintendo.net/api/results";
         break;
+    case "-c":
+        // save coop schedules
+        $path = dirname(getcwd())."/json/coop_schedules/";
+        check_exists($path);
+        $filename = $info["id"].".json";
+        $url = "https://app.splatoon2.nintendo.net/api/coop_schedules";
+        break;
     case "-d":
         // save a each battle detail
         $path = dirname(getcwd())."/json/results/".$info["id"]."/";
         check_exists($path);
         for($i=0; $i<50; $i++){
+            $filename = ($info["num"]-$i).".json";
             if(file_exists($path.$filename)){
                 break;
             }
-            $filename = ($info["num"]-$i).".json";
             $url = "https://app.splatoon2.nintendo.net/api/results/".($info["num"]-$i);
             $json = fopen($path.$filename, "w+b");
             fwrite($json, @file_get_contents($url, false, $context));
             fclose($json);
-            echo("Save ".$filename."(".$i."/50)\n");
+            echo("Save ".$filename."(".($i+1)."/50)\n");
         }
         echo("Done.\n");
         exit(0);
         break;
+    case "-h":
+        showhelp();
+        exit(0);
+        break;
     case "-i":
-        // save image
+        // save images
         $headers = [
             "Accept-language: ja",
             "x-requested-with: XMLHttpRequest",
@@ -69,7 +73,7 @@ function saveJSON($iksm_session, $type){
             'header' => implode("\r\n", $headers),
         ];
         $context = stream_context_create($options);
-        
+
         $path = dirname(getcwd())."/share/".$info["id"]."/";
         check_exists($path);
         for($i=0; $i<50; $i++){
@@ -87,25 +91,61 @@ function saveJSON($iksm_session, $type){
         echo("Done.\n");
         exit(0);
         break;
+    case "-l":
+        // save a league match ranking
+        $path = dirname(getcwd())."/json/league_match_ranking/";
+        check_exists($path);
+        $types = ["P", "T"];
+        for($t=1500562800; $t<=time(); $t+=3600*24){
+            for($i=0; $i<24; $i+=2){
+                foreach($types as $type){
+                    $mode = date("ymd", $t).sprintf("%02d", $i).$type;
+                    $filename = $mode.".json";
+                    echo($filename."\n");
+                    if(file_exists($path.$filename)){
+                        continue;
+                    }
+                    $url = "https://app.splatoon2.nintendo.net/api/league_match_ranking/".$mode."/ALL";
+                    $json = fopen($path.$filename, "w+b");
+                    fwrite($json, @file_get_contents($url, false, $context));
+                    fclose($json);
+                    echo("Save ".$filename."(".($i+1)."/50)\n");
+                }
+            }
+        }
+        echo("Done.\n");
+        exit(0);
+        break;
+    case "-m":
+        // save merchandises
+        $path = dirname(getcwd())."/json/merchandises/";
+        check_exists($path);
+        $filename = $info["id"].".json";
+        $url = "https://app.splatoon2.nintendo.net/api/onlineshop/merchandises";
+        break;
     case "-t":
-        // save a timeline
-        $path = dirname(getcwd())."/json/timeline/".$info["id"]."/";
+        // save timeline
+        $path = dirname(getcwd())."/json/timeline/";
         check_exists($path);
         $filename = $info["id"].".json";
         $url = "https://app.splatoon2.nintendo.net/api/timeline";
         break;
-    case "-h":
-        echo("Usage: php splanet2.php [option] [iksm_session]\n");
-        echo("[option]\n");
-        echo("-a : save results[your weapon, skill, result(win or lose), ...etc] for recent 50 games.\n");
-        echo("-d : save detailed results[include other weapon, skill, ...etc] for recent 50 games.\n");
-        echo("-i : save the screen shot of results.\n");
-        echo("-r : save records[total paint point, league stat, stage stat, ...etc].\n");
-        echo("-t : save timeline[information of sarmon run, splanet gear shop, ...and more].\n");
-        exit(0);
+    case "-r":
+        // save user record
+        $path = dirname(getcwd())."/json/records/";
+        check_exists($path);
+        $filename = $info["id"].".json";
+        $url = "https://app.splatoon2.nintendo.net/api/records";
+        break;
+    case "-s":
+        // save hero mode results
+        $path = dirname(getcwd())."/json/records/hero/";
+        check_exists($path);
+        $filename = $info["id"].".json";
+        $url = "https://app.splatoon2.nintendo.net/api/records/hero";
         break;
     default:
-        echo("No such options.\nPlease read the help [-h].");
+        echo("No such options.\nPlease read the help [-h].\n");
         exit(0);
         break;
     }
@@ -133,8 +173,10 @@ function showhelp(){
     echo("-a : save results[your weapon, skill, result(win or lose), ...etc] for recent 50 games.\n");
     echo("-d : save detailed results[include other's weapon, skill, ...etc] for recent 50 games.\n");
     echo("-i : save the screen shot of results.\n");
+    echo("-l : save the league match ranking for all time.\n");
     echo("-r : save records[total paint point, league stat, stage stat, ...etc].\n");
     echo("-t : save timeline[information of sarmon run, splanet gear shop, ...and more].\n");
+    echo("-s : save records of hero mode.\n");
 }
 
 // Main
