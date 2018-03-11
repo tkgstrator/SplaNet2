@@ -11,15 +11,13 @@ See the above link.
 [command] php splanet2.php [option] [iksm_session]
 
 [option]
-
 -a : save results[your weapon, skill, result(win or lose), ...etc] for recent 50 games.
-
 -d : save detailed results[include other's weapon, skill, ...etc] for recent 50 games.
-
+-i : save the screen shot fo results.
+-l : save the league match ranking for all time.
 -r : save records[total paint point, league stat, stage stat, ...etc].
-
 -t : save timeline[information of sarmon run, splanet gear shop, ...and more].
+-s : save records of hero mode.
 
 ## Features
-- Save share images.
 - Connect twitter account to tweet the result.
