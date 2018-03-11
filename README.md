@@ -11,6 +11,7 @@ See the above link.
 [command] php splanet2.php [option] [iksm_session]
 
 [option]
+
 -a : save results[your weapon, skill, result(win or lose), ...etc] for recent 50 games.
 
 -d : save detailed results[include other's weapon, skill, ...etc] for recent 50 games.
