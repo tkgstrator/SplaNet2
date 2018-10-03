@@ -29,6 +29,10 @@ class Splanet{
         }else{
             $this->uid = $res->results[0]->player_result->player->principal_id;
             $this->game = $res->results[0]->battle_number;
+            
+            $url = "https://app.splatoon2.nintendo.net/api/coop_results";
+            $res = json_decode(@file_get_contents($url,false,$this->context),false);
+            $this->num = $res->summary->card->job_num;
         }
     }
 
@@ -59,7 +63,24 @@ class Splanet{
             fwrite($json, @file_get_contents($url, false, $this->context));
             fclose($json);
             break;
-        case "-c":
+        case "-b":
+            // save a each salmonrun detail
+            $path = dirname(__file__)."/json/coop_results/".$this->uid."/";
+            $this->makedir($path);
+            for($i=0; $i<50; $i++){
+                $filename = ($this->num - $i).".json";
+                // 既にファイルがあれば取得済みということなのでループを終了
+                if(file_exists($path.$filename)){
+                    break;
+                }
+                $url = "https://app.splatoon2.nintendo.net/api/coop_results/".($this->num - $i);
+                $json = fopen($path.$filename, "w+b");
+                fwrite($json, @file_get_contents($url, false, $this->context));
+                fclose($json);
+                echo("save ".$filename."(".($i+1)."/50)\n");
+            }
+            break;
+         case "-c":
             // save coop schedules
             $path = dirname(__FILE__)."/json/coop_schedules/";
             $this->makeDir($path);
@@ -71,8 +92,8 @@ class Splanet{
             break;
         case "-d":
             // save a each battle detail
-            $path = dirname(__FILE__)."/json/results/".$this->game."/";
-            $this->makeDir($path);
+            $path = dirname(__file__)."/json/results/".$this->game."/";
+            $this->makedir($path);
             for($i=0; $i<50; $i++){
                 $filename = ($this->game - $i).".json";
                 // 既にファイルがあれば取得済みということなのでループを終了
@@ -83,7 +104,7 @@ class Splanet{
                 $json = fopen($path.$filename, "w+b");
                 fwrite($json, @file_get_contents($url, false, $this->context));
                 fclose($json);
-                echo("Save ".$filename."(".($i+1)."/50)\n");
+                echo("save ".$filename."(".($i+1)."/50)\n");
             }
             break;
         case "-h":
