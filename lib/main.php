@@ -2,7 +2,7 @@
 require("splanet2.php");
 
 $sessions = array(
-    "YOUR IKSM_SESSION KEY IS HERE";
+    // "YOUR IKSM_SESSION KEY IS HERE",
 );
 
 $types = array(
@@ -13,11 +13,13 @@ $types = array(
     "-r",
     "-t",
     "-s",
-    "-i"
+    "-i",
+    "-j",
 );
 foreach($sessions as $key){
+    $user = new Splanet($key);
     foreach($types as $type){
-        saveJSON($key, $type);
+        $user->save($type);
     }
 }
 echo("Done.");
